@@ -60,7 +60,7 @@ public class GenerateSamplePdfs {
         // 3. Scanned / Empty PDF (Zero text)
         createPdf(new File(dir, "scanned_empty.pdf"), List.of());
 
-        System.out.println("Generated 3 sample PDFs in c:/TT/sample_resumes successfully!");
+        System.out.println("Generated 3 sample PDFs in sample_resumes successfully!");
     }
 
     private static void createPdf(File file, List<String> lines) throws IOException {

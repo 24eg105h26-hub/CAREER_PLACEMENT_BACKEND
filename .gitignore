@@ -1,17 +1,21 @@
-# Java / Maven
+# Java / Maven build output
 target/
 *.class
 *.jar
 *.war
 
-# File Upload Storage
+# Uploaded Files & Temporary Storage
 uploads/
 
-# Environment and Secrets
+# Environment secrets (Strictly ignore all .env except example)
 .env
+.env.*
+!.env.example
 *.log
 
-# IDE
+# IDE & OS files
 .idea/
 *.iml
 .vscode/
+.DS_Store
+Thumbs.db

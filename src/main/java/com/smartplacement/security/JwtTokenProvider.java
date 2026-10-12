@@ -21,6 +21,16 @@ public class JwtTokenProvider {
     @Value("${jwt.expiration-ms}")
     private long jwtExpirationMs;
 
+    @Value("${jwt.expiration-minutes:#{null}}")
+    private Long jwtExpirationMinutes;
+
+    @jakarta.annotation.PostConstruct
+    public void initExpirationMinutes() {
+        if (jwtExpirationMinutes != null && jwtExpirationMinutes > 0) {
+            this.jwtExpirationMs = jwtExpirationMinutes * 60 * 1000L;
+        }
+    }
+
     private SecretKey getSigningKey() {
         byte[] keyBytes = Decoders.BASE64.decode(jwtSecret);
         if (keyBytes.length < 32) {

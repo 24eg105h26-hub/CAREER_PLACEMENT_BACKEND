@@ -43,6 +43,21 @@ public class ResumeService {
     private final AiService aiService;
     private final ObjectMapper objectMapper;
 
+    @org.springframework.beans.factory.annotation.Value("${app.file.upload-dir:uploads/resumes}")
+    private String uploadDir;
+
+    @jakarta.annotation.PostConstruct
+    public void initUploadDir() {
+        try {
+            java.nio.file.Path p = java.nio.file.Paths.get(uploadDir);
+            if (!java.nio.file.Files.exists(p)) {
+                java.nio.file.Files.createDirectories(p);
+            }
+        } catch (Exception e) {
+            log.warn("Could not create upload directory {}: {}", uploadDir, e.getMessage());
+        }
+    }
+
     // Strict Skill Taxonomy
     private static final Map<String, List<String>> SKILL_TAXONOMY = new LinkedHashMap<>();
     static {
@@ -158,6 +173,14 @@ public class ResumeService {
         Double projectScore = sectionScores != null && sectionScores.containsKey("projects") ? ((Number) sectionScores.get("projects")).doubleValue() : 75.0;
 
         String analysisJson = objectMapper.writeValueAsString(analysis);
+
+        String safeFileName = System.currentTimeMillis() + "_" + file.getOriginalFilename().replaceAll("[^a-zA-Z0-9._-]", "_");
+        java.nio.file.Path storedFilePath = java.nio.file.Paths.get(uploadDir).resolve(safeFileName);
+        try {
+            java.nio.file.Files.write(storedFilePath, file.getBytes());
+        } catch (Exception e) {
+            log.warn("Failed to write resume to disk: {}", e.getMessage());
+        }
 
         Resume resume = Resume.builder()
                 .student(student)
