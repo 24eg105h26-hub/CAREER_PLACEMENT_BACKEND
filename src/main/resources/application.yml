@@ -1,0 +1,47 @@
+server:
+  port: 8081
+  error:
+    include-message: always
+    include-binding-errors: always
+
+spring:
+  application:
+    name: smartplacement-backend
+  profiles:
+    active: dev
+  jackson:
+    serialization:
+      fail-on-empty-beans: false
+  servlet:
+    multipart:
+      max-file-size: 5MB
+      max-request-size: 5MB
+
+jwt:
+  secret: ${JWT_SECRET:404E635266556A586E3272357538782F413F4428472B4B6250645367566B5970}
+  expiration-ms: 86400000 # 24 hours
+
+ai:
+  mode: ${AI_MODE:live} # live, dev-fallback, disabled
+  api-key: ${AI_API_KEY:mock-key-for-dev}
+  api-url: ${AI_API_URL:https://api.openai.com/v1/chat/completions}
+  model: ${AI_MODEL:gpt-3.5-turbo}
+
+gemini:
+  api-key: ${GEMINI_API_KEY:${AI_API_KEY:mock-key}}
+  model: ${GEMINI_MODEL:${AI_MODEL:gemini-3.8-flash}}
+
+app:
+  cors:
+    allowed-origins: ${CORS_ORIGINS:http://localhost:5173,http://localhost:3000,http://localhost:5174}
+  file:
+    upload-dir: ${FILE_STORAGE_PATH:uploads/resumes}
+  seed:
+    default-password: ${SEED_DEFAULT_PASSWORD:Password123!}
+    enabled: true
+
+springdoc:
+  api-docs:
+    path: /v3/api-docs
+  swagger-ui:
+    path: /swagger-ui.html

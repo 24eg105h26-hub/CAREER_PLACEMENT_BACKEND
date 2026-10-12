@@ -1,0 +1,48 @@
+package com.smartplacement.dto;
+
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Data;
+import lombok.NoArgsConstructor;
+
+import java.time.LocalDateTime;
+import java.util.Map;
+
+@Data
+@Builder
+@NoArgsConstructor
+@AllArgsConstructor
+public class ApiResponse<T> {
+    private boolean success;
+    private String message;
+    private T data;
+    @Builder.Default
+    private String timestamp = LocalDateTime.now().toString();
+    private Map<String, String> errors;
+
+    public static <T> ApiResponse<T> success(String message, T data) {
+        return ApiResponse.<T>builder()
+                .success(true)
+                .message(message)
+                .data(data)
+                .timestamp(LocalDateTime.now().toString())
+                .build();
+    }
+
+    public static <T> ApiResponse<T> success(T data) {
+        return success("Operation successful", data);
+    }
+
+    public static <T> ApiResponse<T> error(String message, Map<String, String> errors) {
+        return ApiResponse.<T>builder()
+                .success(false)
+                .message(message)
+                .errors(errors)
+                .timestamp(LocalDateTime.now().toString())
+                .build();
+    }
+
+    public static <T> ApiResponse<T> error(String message) {
+        return error(message, null);
+    }
+}
